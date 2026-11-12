@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Backups and archives
+*.tar.gz
+*.zip
+*.bak
+
+# Sensitive database and configurations
+database.json
+server.conf
+*.env
+*.key
+*.pem
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
