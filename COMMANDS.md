@@ -4,6 +4,25 @@ This document provides complete syntax, flags, and examples for using the `vpn-c
 
 ---
 
+## ⚡ Quick Global Short Commands
+
+Once installed, you don't even need long command strings. Use these ultra-short commands from any directory:
+
+| Shortcut | Description |
+| :--- | :--- |
+| **`p`** | Instant 1-letter shortcut to open Prime Khatab Services Menu |
+| **`pk`** | "Prime Khatab" 2-letter menu shortcut |
+| **`prime`** | Brand name menu launcher |
+| **`menu`** | Standard menu launcher |
+| **`status`** | Directly check all services status (OpenSSH, Dropbear, Xray, WS, BadVPN) |
+| **`live`** | View live client connections per port in real-time |
+| **`speed`** | Run instant ping & 25MB CDN download test |
+| **`p-users`** | List all registered user accounts and remaining days |
+| **`p-clean`** | Manually trigger auto-cleanup of expired accounts |
+| **`p-info`** | View VPS hardware, RAM, Disk, Uptime, and BBR status |
+
+---
+
 ## Command Syntax
 
 ```bash

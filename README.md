@@ -38,12 +38,28 @@ Developed and branded exclusively for **Prime Khatab**.
 
 ## 📋 Interactive Menu Overview
 
-Launch the menu at any time by typing:
+Launch the menu at any time using any of these quick shortcuts:
 ```bash
-prime
+p        # Single key shortcut!
+# or
+pk       # Prime Khatab shortcut
+# or
+prime    # Full brand name
 # or
 menu
 ```
+
+### ⚡ Automatic Short Commands Available
+As soon as you install, the following short commands are available globally in any terminal:
+| Command | Action |
+| :--- | :--- |
+| **`p`** / **`pk`** / **`prime`** / **`menu`** | Opens the Prime Khatab Services Main Menu |
+| **`status`** | Checks status of all running tunnel services |
+| **`live`** | Checks live connected clients & active users |
+| **`speed`** | Runs latency & download speedtest |
+| **`p-users`** | Tabulates all active users and expiration |
+| **`p-clean`** | Prunes and deletes all expired accounts |
+| **`p-info`** | Shows VPS CPU, RAM, Disk, and BBR dashboard |
 
 ```text
 =====================================================
