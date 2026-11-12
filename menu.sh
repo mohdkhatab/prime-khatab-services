@@ -18,11 +18,13 @@ clear_screen() {
 }
 
 show_header() {
+    SERVER_IP=$(sudo /usr/local/bin/vpn-cli get-ip 2>/dev/null || curl -s4 --max-time 2 https://api.ipify.org 2>/dev/null || echo "127.0.0.1")
     echo -e "${CYAN}=====================================================${NC}"
     echo -e "${GREEN}               PRIME KHATAB SERVICES                 ${NC}"
     echo -e "${YELLOW}           Premium VPS & Multi-Tunnel CLI            ${NC}"
     echo -e "${BLUE}-----------------------------------------------------${NC}"
     echo -e " ${MAGENTA}Brand / Owner :${NC} Prime Khatab"
+    echo -e " ${MAGENTA}Machine IP    :${NC} ${GREEN}${SERVER_IP}${NC} (Real Machine IPv4)"
     echo -e " ${MAGENTA}Optimization  :${NC} TCP BBR Active • Ultra Low Latency"
     echo -e "${CYAN}=====================================================${NC}"
 }

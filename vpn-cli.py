@@ -12,6 +12,7 @@ import uuid
 import base64
 import time
 import subprocess
+import ipaddress
 from datetime import datetime, timedelta
 
 CONFIG_DIR = "/etc/vpn-manager"
@@ -28,28 +29,108 @@ def normalize_proto(proto):
         return "socks"
     return p
 
+def is_valid_public_ip(ip_str):
+    if not ip_str:
+        return False
+    try:
+        ip = ipaddress.ip_address(str(ip_str).strip())
+        return ip.version == 4 and ip.is_global and not (
+            ip.is_private or ip.is_loopback or ip.is_reserved or ip.is_link_local
+        )
+    except Exception:
+        return False
+
+def save_detected_ip(ip):
+    try:
+        lines = []
+        if os.path.exists(CONF_FILE):
+            with open(CONF_FILE, "r") as f:
+                for line in f:
+                    if not line.startswith("DETECTED_IP="):
+                        lines.append(line)
+        lines.append(f"DETECTED_IP={ip}\n")
+        with open(CONF_FILE, "w") as f:
+            f.writelines(lines)
+    except Exception:
+        pass
+
+def get_cached_ip():
+    if os.path.exists(CONF_FILE):
+        try:
+            with open(CONF_FILE, "r") as f:
+                for line in f:
+                    if line.startswith("DETECTED_IP="):
+                        val = line.strip().split("=", 1)[1].strip()
+                        if val and is_valid_public_ip(val):
+                            return val
+        except Exception:
+            pass
+    return None
+
 def get_server_ip():
+    # 1. Custom Domain if explicitly configured
     if os.path.exists(CONF_FILE):
         try:
             with open(CONF_FILE, "r") as f:
                 for line in f:
                     if line.startswith("DOMAIN="):
-                        val = line.strip().split("=", 1)[1]
+                        val = line.strip().split("=", 1)[1].strip()
                         if val:
                             return val
         except Exception:
             pass
+
+    # 2. Dynamic Real Public IP Resolution (Multiple Global High-Speed Endpoints)
+    endpoints = [
+        "https://api.ipify.org",
+        "https://icanhazip.com",
+        "http://checkip.amazonaws.com",
+        "https://ifconfig.me/ip",
+        "https://ipinfo.io/ip",
+        "https://ip.sb"
+    ]
+    for url in endpoints:
+        try:
+            res = subprocess.check_output(
+                ["curl", "-s4", "--max-time", "2", url],
+                stderr=subprocess.DEVNULL
+            ).decode().strip()
+            if is_valid_public_ip(res):
+                save_detected_ip(res)
+                return res
+        except Exception:
+            continue
+
+    # 3. Cloud Provider Metadata Service (AWS EC2, Google Cloud)
+    cloud_queries = [
+        ["curl", "-s4", "--max-time", "2", "http://169.254.169.254/latest/meta-data/public-ipv4"],
+        ["curl", "-s4", "--max-time", "2", "-H", "Metadata-Flavor: Google", "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip"]
+    ]
+    for cmd in cloud_queries:
+        try:
+            res = subprocess.check_output(cmd, stderr=subprocess.DEVNULL).decode().strip()
+            if is_valid_public_ip(res):
+                save_detected_ip(res)
+                return res
+        except Exception:
+            continue
+
+    # 4. Check cached verified public IP
+    cached = get_cached_ip()
+    if cached and is_valid_public_ip(cached):
+        return cached
+
+    # 5. Local physical network interfaces (for Hetzner/OVH/Bare Metal with direct public IPv4)
     try:
-        ip = subprocess.check_output(["curl", "-s", "--max-time", "3", "https://api.ipify.org"]).decode().strip()
-        if ip:
-            return ip
+        raw_ips = subprocess.check_output(["hostname", "-I"], stderr=subprocess.DEVNULL).decode().split()
+        for rip in raw_ips:
+            if is_valid_public_ip(rip):
+                save_detected_ip(rip)
+                return rip
     except Exception:
         pass
-    try:
-        ip = subprocess.check_output(["hostname", "-I"]).decode().split()[0]
-        return ip
-    except Exception:
-        return "127.0.0.1"
+
+    return "127.0.0.1"
 
 def load_db():
     if os.path.exists(DB_FILE):
@@ -929,6 +1010,8 @@ if __name__ == "__main__":
             restore_db(path)
         elif cmd == "set-domain":
             set_domain(sys.argv[2])
+        elif cmd in ["get-ip", "ip", "my-ip"]:
+            print(get_server_ip())
         else:
             print_help()
     except IndexError:
