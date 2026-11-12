@@ -103,7 +103,7 @@ sudo vpn-cli add-ssh <username> <password> <days>
 ```
 *Example:*
 ```bash
-sudo vpn-cli add-ssh khatab pass123 30
+sudo vpn-cli add-ssh user1 pass123 30
 ```
 - **Ports:** OpenSSH (22), Dropbear (109, 143), SSH-WS (80, 8080, 8880), BadVPN (7300).
 - **HTTP Payload:** `GET / HTTP/1.1[crlf]Host: bug.com[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf][crlf]`
@@ -182,7 +182,7 @@ sudo vpn-cli show-user <protocol> <username>
 sudo vpn-cli show-user vless alex
 sudo vpn-cli show-user vmess john
 sudo vpn-cli show-user socks tguser
-sudo vpn-cli show-user ssh khatab
+sudo vpn-cli show-user ssh user1
 sudo vpn-cli show-user trojan david
 ```
 
@@ -208,7 +208,7 @@ sudo vpn-cli renew <protocol> <username> <days_to_add>
 *Examples:*
 ```bash
 sudo vpn-cli renew vless alex 30
-sudo vpn-cli renew ssh khatab 15
+sudo vpn-cli renew ssh user1 15
 sudo vpn-cli renew socks tguser 60
 ```
 
@@ -222,7 +222,7 @@ sudo vpn-cli del <protocol> <username>
 *Examples:*
 ```bash
 sudo vpn-cli del vless alex
-sudo vpn-cli del ssh khatab
+sudo vpn-cli del ssh user1
 sudo vpn-cli del socks tguser
 ```
 
