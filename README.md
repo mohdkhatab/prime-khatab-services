@@ -97,16 +97,25 @@ As soon as you install, the following short commands are available globally in a
 
 ---
 
-## ⚡ Quick 1-Click Installation
+## ⚡ 1-Click Automated Installation (Zero Setup Needed)
 
-To install **Prime Khatab Services** on any fresh Ubuntu / Debian VPS:
+Kisi bhi fresh **Ubuntu (20.04 / 22.04 / 24.04)** ya **Debian** VPS par bas **yeh 1 command** chalayein:
 
 ```bash
-git clone https://github.com/mohdkhatab/prime-khatab-services.git
-cd prime-khatab-services
-sudo chmod +x install.sh
-sudo ./install.sh
+curl -fsSL https://raw.githubusercontent.com/mohdkhatab/prime-khatab-services/main/install.sh | sudo bash
 ```
+
+### Yeh command automatically kya karegi?
+1. Saare required software packages install karegi.
+2. Official **Xray Core** download & install karegi.
+3. **Dropbear SSH** (Ports 109, 143) configure aur start karegi.
+4. **BadVPN UDPGW** (Port 7300) setup & run karegi.
+5. **Multi-WS Reverse Proxy** (Ports 80, 8080, 8880) launch karegi.
+6. Unique **VLESS Reality keys** (x25519) generate karegi.
+7. **TCP BBR** speed booster enable karegi.
+8. Saari short commands (`p`, `pk`, `status`, `live`, `speed`) set karegi.
+9. Daily automatic **expired account cleaner (cron)** set karegi.
+10. Setup complete hote hi automatically **Prime Khatab Menu** open kar degi!
 
 ---
 
