@@ -13,53 +13,46 @@ Developed and branded exclusively for **Prime Khatab**.
 
 ---
 
-## 🌟 Key Features
+## ⚡ 1-Click Automated Installation (Zero Setup Needed)
 
-- **Multi-Protocol Support:**
-  - 🛡️ **SSH WebSocket / Dropbear / BadVPN:** OpenSSH (Port 22), Dropbear (Ports 109, 143), Multi-WS Proxy (Ports 80, 8080, 8880), UDPGW (Port 7300).
-  - ⚡ **V2Ray / VMess (WebSocket):** CDN-friendly WebSocket tunneling with automated base64 client URI and QR codes.
-  - 🚀 **VLESS Reality (XTLS Vision):** Ultra-fast, direct IP connection requiring **zero domain** and zero SSL certificates.
-  - 🐎 **Trojan-WS:** Secure WebSocket tunneling for evasion of heavy DPI filters.
-  - ✈️ **Telegram SOCKS5 Proxy:** Instant 1-click proxy generator (`tg://socks` & `https://t.me/socks`) with voice call UDP support.
+Kisi bhi fresh **Ubuntu (20.04 / 22.04 / 24.04)** ya **Debian** VPS par bas **yeh 1 command** chalayein:
 
-- **Automated Lifecycle Management:**
-  - ⏰ **Auto-Prune & Auto-Expiry:** Automatic removal of expired accounts daily via integrated background cron jobs.
-  - 🔄 **Account Renewal:** 1-click extension of account validity for any protocol.
-  - 🔍 **Account Link & QR Retrieval:** Re-generate connection URIs and ANSI terminal QR codes anytime.
+```bash
+curl -fsSL https://raw.githubusercontent.com/mohdkhatab/prime-khatab-services/main/install.sh | sudo bash
+```
 
-- **System & Network Optimization:**
-  - 🚀 **TCP BBR Congestion Control:** Automated kernel BBR activation for 2x–5x tunnel throughput and minimal packet loss.
-  - 📊 **VPS Resource Dashboard:** Real-time CPU, RAM, Disk, Uptime, and account count statistics.
-  - 👥 **Live Online Monitor:** Real-time detection of active SSH sessions and client connections across ports 22, 80, 443, 1080, and 7300.
-  - ⚡ **Built-in Speedtest:** Fast latency and CDN download bandwidth measurement.
-  - 💾 **1-Click Backup & Restore:** Safe backup of account databases and Xray configurations into compressed `.tar.gz` archives.
+*Alternative (agar git se clone karna ho):*
+```bash
+git clone https://github.com/mohdkhatab/prime-khatab-services.git
+cd prime-khatab-services
+chmod +x install.sh
+sudo ./install.sh
+```
 
 ---
 
-## 📋 Interactive Menu Overview
+## ⚡ Automatic Quick Shortcuts (Available Anywhere)
 
-Launch the menu at any time using any of these quick shortcuts:
-```bash
-p        # Single key shortcut!
-# or
-pk       # Prime Khatab shortcut
-# or
-prime    # Full brand name
-# or
-menu
-```
+Jaise hi aap install karenge, ye saari short commands terminal me direct kaam karengi:
 
-### ⚡ Automatic Short Commands Available
-As soon as you install, the following short commands are available globally in any terminal:
-| Command | Action |
-| :--- | :--- |
-| **`p`** / **`pk`** / **`prime`** / **`menu`** | Opens the Prime Khatab Services Main Menu |
-| **`status`** | Checks status of all running tunnel services |
-| **`live`** | Checks live connected clients & active users |
-| **`speed`** | Runs latency & download speedtest |
-| **`p-users`** | Tabulates all active users and expiration |
-| **`p-clean`** | Prunes and deletes all expired accounts |
-| **`p-info`** | Shows VPS CPU, RAM, Disk, and BBR dashboard |
+| Shortcut | Description / Action | Example |
+| :--- | :--- | :--- |
+| **`p`** | **1-Letter Single Key Shortcut!** Main Menu open karta hai | `p` |
+| **`pk`** | **Prime Khatab** short command se Menu open karta hai | `pk` |
+| **`prime`** | Full brand name se Menu open karta hai | `prime` |
+| **`menu`** | Standard interactive menu launcher | `menu` |
+| **`status`** | Direct sabhi tunnel services ka live status check karta hai | `status` |
+| **`live`** | Real-time connected clients aur active users dikhata hai | `live` |
+| **`speed`** | Instant ping aur 25MB CDN download speedtest run karta hai | `speed` |
+| **`p-users`** | Sabhi active users, creation date aur expiry list karta hai | `p-users` |
+| **`p-clean`** | Expired accounts ko automatically delete/prune karta hai | `p-clean` |
+| **`p-info`** | VPS Dashboard (CPU, RAM, Disk, Uptime, BBR) dikhata hai | `p-info` |
+
+---
+
+## 📋 Interactive Terminal Menu (TUI)
+
+Terminal me `p`, `pk`, `prime`, ya `menu` likhne par ye menu open hoga:
 
 ```text
 =====================================================
@@ -97,84 +90,274 @@ As soon as you install, the following short commands are available globally in a
 
 ---
 
-## ⚡ 1-Click Automated Installation (Zero Setup Needed)
+## 🛠️ Complete CLI Commands Reference (Direct Commands)
 
-Kisi bhi fresh **Ubuntu (20.04 / 22.04 / 24.04)** ya **Debian** VPS par bas **yeh 1 command** chalayein:
+Aap bina menu khole direct terminal se bhi saari commands execute kar sakte hain.
+
+### 1. Account Creation Commands
+
+#### 🛡️ SSH Account (WebSocket / Dropbear / BadVPN UDPGW)
+OpenSSH, Dropbear aur WebSocket proxy ke liye account create karta hai.
+```bash
+sudo vpn-cli add-ssh <username> <password> <days>
+```
+*Example:*
+```bash
+sudo vpn-cli add-ssh khatab pass123 30
+```
+- **Ports:** OpenSSH (22), Dropbear (109, 143), SSH-WS (80, 8080, 8880), BadVPN (7300).
+- **HTTP Payload:** `GET / HTTP/1.1[crlf]Host: bug.com[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf][crlf]`
+
+---
+
+#### ⚡ V2Ray / VMess (WebSocket CDN)
+Xray VMess account create karta hai, UUID generate karta hai aur base64 `vmess://` link ke sath QR code deta hai.
+```bash
+sudo vpn-cli add-vmess <username> <days>
+```
+*Example:*
+```bash
+sudo vpn-cli add-vmess john 30
+```
+- **Port:** 80 (Also 8080, 8880)
+- **Path:** `/vmess`
+- **Network:** `ws` (WebSocket)
+
+---
+
+#### 🚀 VLESS Reality (XTLS Vision - No Domain Required)
+Xray VLESS Reality account create karta hai bina kisi domain ya SSL certificate ke direct high-speed connection deta hai.
+```bash
+sudo vpn-cli add-vless <username> <days>
+```
+*Example:*
+```bash
+sudo vpn-cli add-vless alex 30
+```
+- **Port:** 443
+- **Flow:** `xtls-rprx-vision`
+- **Security:** `reality`
+- **SNI:** `www.microsoft.com`
+
+---
+
+#### 🐎 Trojan-WS
+Trojan WebSocket account create karta hai DPI filters aur censorship bypass ke liye.
+```bash
+sudo vpn-cli add-trojan <username> <password> <days>
+```
+*Example:*
+```bash
+sudo vpn-cli add-trojan david secret123 30
+```
+- **Port:** 80 (Also 8080, 8880)
+- **Path:** `/trojan`
+
+---
+
+#### ✈️ Telegram SOCKS5 Proxy (With UDP Voice & Video Calls)
+Telegram ke liye 1-Click proxy link (`tg://socks` aur `https://t.me/socks`) generate karta hai.
+```bash
+sudo vpn-cli add-socks <username> <password> <days> [port]
+```
+*Example (Default port 1080):*
+```bash
+sudo vpn-cli add-socks tguser tgpass 30 1080
+```
+- **Direct Telegram Link:** `https://t.me/socks?server=YOUR_IP&port=1080&user=tguser&pass=tgpass`
+- **UDP:** Enabled for voice & video calling.
+
+---
+
+### 2. Querying & Display Commands
+
+#### 🔍 Show Account Details / Re-generate Link & QR
+Kisi bhi pehle se bane account ki link, config aur QR code dobara screen par dekhne ke liye:
+```bash
+sudo vpn-cli show-user <protocol> <username>
+```
+*Supported Protocols:* `ssh`, `vmess`, `vless`, `trojan`, `socks`
+*Examples:*
+```bash
+sudo vpn-cli show-user vless alex
+sudo vpn-cli show-user vmess john
+sudo vpn-cli show-user socks tguser
+sudo vpn-cli show-user ssh khatab
+sudo vpn-cli show-user trojan david
+```
+
+---
+
+#### 📋 List All Active Accounts & Expiration
+Sabhi accounts ki table jisme Protocol, Username, Created Date, Expiry Date aur Days Left aate hain:
+```bash
+sudo vpn-cli list
+# ya shortcut:
+p-users
+```
+
+---
+
+### 3. Lifecycle & Maintenance Commands
+
+#### 🔄 Renew / Extend Account Expiry
+Account ki expiry date ko aage badhane (extend karne) ke liye:
+```bash
+sudo vpn-cli renew <protocol> <username> <days_to_add>
+```
+*Examples:*
+```bash
+sudo vpn-cli renew vless alex 30
+sudo vpn-cli renew ssh khatab 15
+sudo vpn-cli renew socks tguser 60
+```
+
+---
+
+#### ❌ Delete Single Account
+Kisi account ko database aur Xray/Linux se completely delete karne ke liye:
+```bash
+sudo vpn-cli del <protocol> <username>
+```
+*Examples:*
+```bash
+sudo vpn-cli del vless alex
+sudo vpn-cli del ssh khatab
+sudo vpn-cli del socks tguser
+```
+
+---
+
+#### 🧹 Auto-Clean Expired Accounts (Prune)
+Jo accounts expire ho chuke hain unhe 1 command me system se scan aur remove karne ke liye:
+```bash
+sudo vpn-cli auto-clean
+# ya
+sudo vpn-cli prune
+# ya shortcut:
+p-clean
+```
+*(Note: Daily raat 12:00 baje cron job ise automatically bhi run karti hai).*
+
+---
+
+### 4. Server & Monitoring Commands
+
+#### 👥 Live Online Users & Connection Monitor
+Real-time active SSH sessions aur har port par connected live clients check karne ke liye:
+```bash
+sudo vpn-cli live-users
+# ya shortcut:
+live
+```
+
+---
+
+#### 📊 VPS Resource Dashboard
+CPU Model, Cores, RAM Usage, Disk Space, Uptime, BBR Status aur Total Active Accounts summary dekhne ke liye:
+```bash
+sudo vpn-cli vps-info
+# ya shortcut:
+p-info
+```
+
+---
+
+#### ⚡ Built-in Speedtest
+Cloudflare DNS latency ping aur 25MB CDN high-speed download test:
+```bash
+sudo vpn-cli speedtest
+# ya shortcut:
+speed
+```
+
+---
+
+#### 🚦 Service Status Check
+Sabhi 5 tunnel services ka status check karne ke liye:
+```bash
+sudo vpn-cli status
+# ya shortcut:
+status
+```
+
+---
+
+#### 🌐 Set Custom Domain / Bug Host
+Agar aap Cloudflare CDN ya custom domain use kar rahe hain:
+```bash
+sudo vpn-cli set-domain vpn.yourdomain.com
+```
+
+---
+
+### 5. Backup & Restore Commands
+
+#### 💾 Backup Configurations & Database
+Saare accounts aur Xray configuration ka compressed `.tar.gz` archive create karne ke liye:
+```bash
+sudo vpn-cli backup
+```
+*Backup file location:* `/home/ubuntu/prime_khatab_backup_latest.tar.gz`
+
+---
+
+#### 🔄 Restore Configurations from Backup
+Backup se accounts aur configs ko 1-click restore karne ke liye:
+```bash
+sudo vpn-cli restore /home/ubuntu/prime_khatab_backup_latest.tar.gz
+```
+
+---
+
+## 🧱 Ports & Firewall Configuration (UFW)
+
+Agar aap AWS, DigitalOcean, Hetzner, ya Linode use kar rahe hain, to firewall me ye ports open honi chahiye:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mohdkhatab/prime-khatab-services/main/install.sh | sudo bash
-```
-
-### Yeh command automatically kya karegi?
-1. Saare required software packages install karegi.
-2. Official **Xray Core** download & install karegi.
-3. **Dropbear SSH** (Ports 109, 143) configure aur start karegi.
-4. **BadVPN UDPGW** (Port 7300) setup & run karegi.
-5. **Multi-WS Reverse Proxy** (Ports 80, 8080, 8880) launch karegi.
-6. Unique **VLESS Reality keys** (x25519) generate karegi.
-7. **TCP BBR** speed booster enable karegi.
-8. Saari short commands (`p`, `pk`, `status`, `live`, `speed`) set karegi.
-9. Daily automatic **expired account cleaner (cron)** set karegi.
-10. Setup complete hote hi automatically **Prime Khatab Menu** open kar degi!
-
----
-
-## 🛠️ CLI Direct Commands
-
-You can execute operations directly without opening the interactive menu:
-
-| Task | Command |
-| :--- | :--- |
-| **Create SSH Account** | `sudo vpn-cli add-ssh <user> <pass> <days>` |
-| **Create VMess Account** | `sudo vpn-cli add-vmess <user> <days>` |
-| **Create VLESS Account** | `sudo vpn-cli add-vless <user> <days>` |
-| **Create Trojan Account** | `sudo vpn-cli add-trojan <user> <pass> <days>` |
-| **Create SOCKS5 Proxy** | `sudo vpn-cli add-socks <user> <pass> <days> [port]` |
-| **Retrieve Link & QR** | `sudo vpn-cli show-user <protocol> <user>` |
-| **List All Accounts** | `sudo vpn-cli list` |
-| **Renew Account** | `sudo vpn-cli renew <protocol> <user> <days>` |
-| **Delete Account** | `sudo vpn-cli del <protocol> <user>` |
-| **Clean Expired Accounts**| `sudo vpn-cli auto-clean` |
-| **Live Online Connections**| `sudo vpn-cli live-users` |
-| **VPS Dashboard** | `sudo vpn-cli vps-info` |
-| **Speedtest** | `sudo vpn-cli speedtest` |
-| **Service Status** | `sudo vpn-cli status` |
-| **Backup Configurations**| `sudo vpn-cli backup` |
-| **Restore Configurations**| `sudo vpn-cli restore [file_path]` |
-
-For full reference, see [COMMANDS.md](COMMANDS.md).
-
----
-
-## 📁 Repository Structure
-
-```text
-prime-khatab-services/
-├── menu.sh               # Colorful Interactive Terminal Menu (TUI)
-├── vpn-cli.py            # Core Python Management Engine
-├── install.sh            # Automated Setup & Dependency Installer
-├── services/
-│   └── ssh-ws.py         # Asynchronous WebSocket Multiplexer & Reverse Proxy
-├── README.md             # Project Documentation
-├── COMMANDS.md           # CLI Syntax and Usage Manual
-├── INSTALLATION.md       # Prerequisite Ports, Firewall & Backend Architecture
-├── LICENSE               # MIT License
-└── .gitignore            # Git Ignore for databases, keys & backups
+sudo ufw allow 22/tcp    # OpenSSH
+sudo ufw allow 80/tcp    # SSH-WS, VMess-WS, Trojan-WS
+sudo ufw allow 443/tcp   # VLESS Reality
+sudo ufw allow 109/tcp   # Dropbear SSH
+sudo ufw allow 143/tcp   # Dropbear SSH
+sudo ufw allow 1080/tcp  # SOCKS5 Proxy
+sudo ufw allow 1080/udp  # SOCKS5 UDP Voice/Video Calls
+sudo ufw allow 7300/udp  # BadVPN UDPGW (Gaming/Calls)
+sudo ufw allow 8080/tcp  # Alternative HTTP Proxy
+sudo ufw allow 8880/tcp  # Alternative HTTP Proxy
+sudo ufw reload
 ```
 
 ---
 
-## 🔒 Security Best Practices
+## 🔄 System Service Controls (Manual Restart)
 
-1. Default accounts are stored locally in `/etc/vpn-manager/database.json`.
-2. Do not commit actual user credentials or private reality keys into version control.
-3. Daily pruning ensures expired clients lose access instantly.
+Agar kabhi kisi service ko manually restart ya check karna ho:
+
+```bash
+# Sabhi tunnel services ek sath restart karne ke liye:
+sudo systemctl restart dropbear ssh-ws badvpn xray
+
+# Individual services status:
+sudo systemctl status xray
+sudo systemctl status ssh-ws
+sudo systemctl status dropbear
+sudo systemctl status badvpn
+```
 
 ---
 
-## 👤 Author & Credits
+## 📱 Recommended Client Apps
 
-- **Author & Brand:** Mohd Khatab (Prime Khatab)
+- **Android:** v2rayNG, NapsternetV, SagerNet, HTTP Custom, OpenTunnel, Telegram.
+- **iOS:** Streisand, V2Box, Shadowrocket, NapsternetV, Telegram.
+- **Windows:** v2rayN, Nekoray, OpenTunnel, Telegram Desktop.
+
+---
+
+## 👤 Author & Brand
+
+- **Author & Owner:** Mohd Khatab (Prime Khatab)
 - **Website:** [codewithkhatab.in](https://codewithkhatab.in)
 - **GitHub:** [@mohdkhatab](https://github.com/mohdkhatab)
 
