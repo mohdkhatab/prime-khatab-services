@@ -47,6 +47,7 @@ Jaise hi aap install karenge, ye saari short commands terminal me direct kaam ka
 | **`p-users`** | Sabhi active users, creation date aur expiry list karta hai | `p-users` |
 | **`p-clean`** | Expired accounts ko automatically delete/prune karta hai | `p-clean` |
 | **`p-info`** | VPS Dashboard (CPU, RAM, Disk, Uptime, BBR) dikhata hai | `p-info` |
+| **`p-response`** / **`response`** | Custom HTTP WS Response & AI Prompt Wizard open karta hai | `p-response` |
 
 ---
 
@@ -82,6 +83,7 @@ Terminal me `p`, `pk`, `prime`, ya `menu` likhne par ye menu open hoga:
  [16] Backup Database & Configurations
  [17] Restore Database from Backup
  [18] Set Custom Domain / Bug Host
+ [19] Custom WS HTTP Response (AI Prompt & Code Setter)
  [0]  Exit Menu
 =====================================================
  Prime Khatab Services • Fast, Secure & Anonymous
@@ -291,7 +293,49 @@ sudo vpn-cli set-domain vpn.yourdomain.com
 
 ---
 
-### 5. Backup & Restore Commands
+### 5. Custom WS HTTP Response (AI Agent Generator & Manager)
+
+Aap apne WebSocket tunnel (HTTP Custom, NapsternetV, OpenTunnel) ke HTTP 101 aur 200 responses ko apni marzi ke mutabiq customize kar sakte hain. CLI aapko ek ready-made **AI Prompt** deta hai jise aap ChatGPT, Claude ya Gemini ko dekar custom response code banwa sakte hain aur direct CLI me paste karke set kar sakte hain!
+
+```text
+=====================================================
+       PRIME KHATAB SERVICES - CUSTOM WS RESPONSE
+=====================================================
+ [1] Get AI Prompt Template (Copy & give to ChatGPT/Claude)
+ [2] View Current Active HTTP Response
+ [3] Set / Paste New HTTP 101 Response (WebSocket)
+ [4] Set / Paste New HTTP 200 Response (CONNECT Tunnel)
+ [5] Apply Quick Presets (Cloudflare / Nginx / VIP)
+ [6] Reset to Default Prime Khatab Response
+ [0] Back to Main Menu
+=====================================================
+```
+
+#### Kaise Use Karein (Step-by-Step AI Workflow):
+1. **AI Prompt Nikalein:**
+   Command chalayein ya Menu se Option `[1]` select karein:
+   ```bash
+   sudo vpn-cli get-prompt
+   ```
+2. **AI Agent Ko Bhejein:**
+   Screen par jo prompt aayega use copy karke apne kisi bhi AI (ChatGPT, Claude, Gemini, DeepSeek) ko send karein.
+3. **AI Code Copy Karein:**
+   AI agent aapke brand ya spoof ke mutabiq raw HTTP response generate karke dega.
+4. **CLI Me Paste Karke Set Karein:**
+   ```bash
+   sudo vpn-cli custom-response
+   # Ya direct shortcut:
+   p-response
+   ```
+   Option `[3]` choose karke code paste kar dein. `ssh-ws` service automatically restart ho jayegi aur naya response live ho jayega!
+5. **Kahin Se Bhi Change Ya Reset Karein:**
+   - Active response dekhne ke liye: `sudo vpn-cli view-response`
+   - Default response wapas lane ke liye: `sudo vpn-cli reset-response`
+   - 1-Click Cloudflare/Nginx presets ke liye: Option `[5]`
+
+---
+
+### 6. Backup & Restore Commands
 
 #### 💾 Backup Configurations & Database
 Saare accounts aur Xray configuration ka compressed `.tar.gz` archive create karne ke liye:

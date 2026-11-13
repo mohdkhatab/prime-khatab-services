@@ -20,6 +20,7 @@ Once installed, you don't even need long command strings. Use these ultra-short 
 | **`p-users`** | List all registered user accounts and remaining days |
 | **`p-clean`** | Manually trigger auto-cleanup of expired accounts |
 | **`p-info`** | View VPS hardware, RAM, Disk, Uptime, and BBR status |
+| **`p-response`** / **`response`** | Open Custom HTTP WS Response & AI Prompt Wizard |
 
 ---
 
@@ -180,4 +181,46 @@ sudo vpn-cli backup
 Restores configurations from an archive and restarts services.
 ```bash
 sudo vpn-cli restore /path/to/backup.tar.gz
+```
+
+---
+
+## 6. Custom HTTP Response & AI Prompt Manager
+
+### Open Interactive Response Manager
+Launches the full interactive wizard with preset options, AI prompt viewer, custom response setter, and reset options.
+```bash
+sudo vpn-cli custom-response
+# or shortcut:
+p-response
+```
+
+### Get Copy-Paste AI Agent Prompt
+Displays a complete template to copy and send to ChatGPT, Claude, DeepSeek, or Gemini.
+```bash
+sudo vpn-cli get-prompt
+```
+
+### View Currently Active Responses
+Checks whether you are using the default or a custom HTTP 101 / 200 response.
+```bash
+sudo vpn-cli view-response
+```
+
+### Set Custom HTTP 101 WebSocket Response
+Directly paste or pass your custom HTTP 101 response block.
+```bash
+sudo vpn-cli set-response-101
+```
+
+### Set Custom HTTP 200 CONNECT Response
+Directly paste or pass your custom HTTP 200 response block.
+```bash
+sudo vpn-cli set-response-200
+```
+
+### Reset to Default Response
+Restores the default Prime Khatab Services HTTP 101 & 200 response and restarts `ssh-ws`.
+```bash
+sudo vpn-cli reset-response
 ```

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import asyncio
 
 DROPBEAR_HOST = "127.0.0.1"
@@ -7,8 +8,41 @@ DROPBEAR_PORT = 109
 VMESS_PORT = 10086
 TROJAN_PORT = 10087
 
-RESPONSE_101 = b"HTTP/1.1 101 Prime Khatab Services Connected\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nServer: Prime-Khatab-Services\r\n\r\n"
-RESPONSE_200 = b"HTTP/1.1 200 Prime Khatab Services Connected\r\n\r\n"
+RESP_101_FILE = "/etc/vpn-manager/response_101.txt"
+RESP_200_FILE = "/etc/vpn-manager/response_200.txt"
+
+DEFAULT_101 = b"HTTP/1.1 101 Prime Khatab Services Connected\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nServer: Prime-Khatab-Services\r\n\r\n"
+DEFAULT_200 = b"HTTP/1.1 200 Prime Khatab Services Connected\r\n\r\n"
+
+def get_response_101():
+    if os.path.exists(RESP_101_FILE):
+        try:
+            with open(RESP_101_FILE, "rb") as f:
+                content = f.read().strip()
+                if content:
+                    content = content.replace(b"[crlf]", b"\r\n").replace(b"[CRLF]", b"\r\n")
+                    content = content.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+                    if not content.endswith(b"\r\n\r\n"):
+                        content += b"\r\n\r\n"
+                    return content
+        except Exception:
+            pass
+    return DEFAULT_101
+
+def get_response_200():
+    if os.path.exists(RESP_200_FILE):
+        try:
+            with open(RESP_200_FILE, "rb") as f:
+                content = f.read().strip()
+                if content:
+                    content = content.replace(b"[crlf]", b"\r\n").replace(b"[CRLF]", b"\r\n")
+                    content = content.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+                    if not content.endswith(b"\r\n\r\n"):
+                        content += b"\r\n\r\n"
+                    return content
+        except Exception:
+            pass
+    return DEFAULT_200
 
 async def pipe(reader, writer):
     try:
@@ -51,10 +85,10 @@ async def handle_client(client_reader, client_writer):
             # Dropbear SSH Tunnel
             target_reader, target_writer = await asyncio.open_connection(DROPBEAR_HOST, DROPBEAR_PORT)
             if header.startswith(b"GET") or "upgrade: websocket" in header_str.lower():
-                client_writer.write(RESPONSE_101)
+                client_writer.write(get_response_101())
                 await client_writer.drain()
             elif header.startswith(b"CONNECT"):
-                client_writer.write(RESPONSE_200)
+                client_writer.write(get_response_200())
                 await client_writer.drain()
             else:
                 target_writer.write(header)

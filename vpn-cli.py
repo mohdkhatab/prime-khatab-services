@@ -20,6 +20,8 @@ DB_FILE = os.path.join(CONFIG_DIR, "database.json")
 CONF_FILE = os.path.join(CONFIG_DIR, "server.conf")
 XRAY_CONF = "/usr/local/etc/xray/config.json"
 REALITY_ENV = "/usr/local/etc/xray/reality.env"
+RESP_101_FILE = os.path.join(CONFIG_DIR, "response_101.txt")
+RESP_200_FILE = os.path.join(CONFIG_DIR, "response_200.txt")
 
 os.makedirs(CONFIG_DIR, exist_ok=True)
 
@@ -932,6 +934,206 @@ def status():
     print("\033[1;32m               Prime Khatab Tunnel Core\033[0m")
     print("="*56 + "\n")
 
+def get_ai_prompt():
+    print("\n" + "="*68)
+    print("\033[1;36m           PRIME KHATAB SERVICES - AI RESPONSE PROMPT\033[0m")
+    print("="*68)
+    print("\033[1;33m📋 Step 1: Neeche diya gaya Prompt copy karein.\033[0m")
+    print("\033[1;33m🤖 Step 2: Apne kisi bhi AI Agent (ChatGPT, Claude, Gemini, DeepSeek) ko bhejein.\033[0m")
+    print("\033[1;33m⚡ Step 3: AI jo code dega, use copy karke CLI me paste karein.\033[0m")
+    print("-" * 68)
+    prompt = """I am running a Python Asyncio WebSocket Tunnel Proxy for SSH & VPN (used for HTTP Custom, OpenTunnel, NapsternetV, NetMod).
+
+Please write a custom raw HTTP 101 Switching Protocols response header for my server.
+
+My Details:
+- Brand / Status Message: [Enter your Brand Name or Custom Message here]
+- Server Name: [e.g. Cloudflare / Nginx / Apache / Custom-Edge]
+- Extra Headers: [e.g. Upgrade: websocket, Connection: Upgrade]
+
+Requirements:
+1. Start with valid HTTP line: HTTP/1.1 101 [Status Text]
+2. Include:
+Upgrade: websocket
+Connection: Upgrade
+Server: [Server Name]
+3. Use standard raw HTTP formatting without markdown code fences.
+
+Please give me ONLY the raw HTTP response block so I can directly paste it into my VPS CLI."""
+    print(prompt)
+    print("-" * 68)
+    print("\033[1;32m[✓] Prompt copy karein aur AI ko dein. Response milne par Set option se paste karein.\033[0m")
+    print("="*68 + "\n")
+
+def view_responses():
+    print("\n" + "="*60)
+    print("\033[1;36m         CURRENT ACTIVE HTTP WEBSOCKET RESPONSES\033[0m")
+    print("="*60)
+    
+    print("\033[1;33m[ HTTP 101 Response (GET / WebSocket Handshake) ]:\033[0m")
+    if os.path.exists(RESP_101_FILE):
+        try:
+            with open(RESP_101_FILE, "r") as f:
+                c = f.read().strip()
+                print(f"\033[1;32m(Custom Active):\033[0m\n{c}")
+        except Exception as e:
+            print(f"Error reading file: {e}")
+    else:
+        print("\033[1;37m(Default Active):\033[0m")
+        print("HTTP/1.1 101 Prime Khatab Services Connected\nUpgrade: websocket\nConnection: Upgrade\nServer: Prime-Khatab-Services")
+
+    print("-" * 60)
+    print("\033[1;33m[ HTTP 200 Response (CONNECT Tunnel) ]:\033[0m")
+    if os.path.exists(RESP_200_FILE):
+        try:
+            with open(RESP_200_FILE, "r") as f:
+                c = f.read().strip()
+                print(f"\033[1;32m(Custom Active):\033[0m\n{c}")
+        except Exception as e:
+            print(f"Error reading file: {e}")
+    else:
+        print("\033[1;37m(Default Active):\033[0m")
+        print("HTTP/1.1 200 Prime Khatab Services Connected")
+        
+    print("="*60 + "\n")
+
+def format_http_response(text, code_type="101"):
+    lines = []
+    for l in text.splitlines():
+        cl = l.strip()
+        if cl.startswith("```"):
+            continue
+        lines.append(l)
+    cleaned = "\n".join(lines).strip()
+    cleaned = cleaned.replace("[crlf]", "\r\n").replace("[CRLF]", "\r\n")
+    cleaned = cleaned.replace("\r\n", "\n").replace("\n", "\r\n")
+    
+    if not cleaned.upper().startswith("HTTP/"):
+        if code_type == "101":
+            cleaned = "HTTP/1.1 101 Switching Protocols\r\n" + cleaned
+        else:
+            cleaned = "HTTP/1.1 200 OK\r\n" + cleaned
+            
+    if not cleaned.endswith("\r\n\r\n"):
+        cleaned += "\r\n\r\n"
+        
+    return cleaned.encode()
+
+def set_custom_response(code_type="101", raw_content=None):
+    target_file = RESP_101_FILE if code_type == "101" else RESP_200_FILE
+    if not raw_content:
+        print("\n" + "="*58)
+        print(f"\033[1;36m       PASTE CUSTOM HTTP {code_type} RESPONSE CODE\033[0m")
+        print("="*58)
+        print(" AI Agent se mila hua response code neeche paste karein.")
+        print(" (Supports multi-line code ya single-line [crlf] format)")
+        print(" Paste karne ke baad empty line par '\033[1;32mDONE\033[0m' likhein ya Enter press karein:")
+        print("-" * 58)
+        lines = []
+        while True:
+            try:
+                line = input()
+                if line.strip().upper() == "DONE":
+                    break
+                if not line and lines and not lines[-1]:
+                    break
+                lines.append(line)
+            except EOFError:
+                break
+        raw_content = "\n".join(lines).strip()
+
+    if not raw_content:
+        print("\033[1;31m[!] Koi response code enter nahi kiya gaya!\033[0m")
+        return False
+
+    formatted_bytes = format_http_response(raw_content, code_type)
+    with open(target_file, "wb") as f:
+        f.write(formatted_bytes)
+
+    subprocess.run(["systemctl", "restart", "ssh-ws"], check=False)
+    print(f"\n\033[1;32m[✓] Custom HTTP {code_type} Response successfully set & ssh-ws service restarted!\033[0m")
+    view_responses()
+    return True
+
+def apply_preset_response(preset_id):
+    if str(preset_id) == "1":
+        content = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nServer: cloudflare\r\nCF-RAY: 8e5f2a1b9c0d-ORD\r\n\r\n"
+        name = "Cloudflare CDN Edge Spoof"
+    elif str(preset_id) == "2":
+        content = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nServer: nginx/1.24.0 (Ubuntu)\r\n\r\n"
+        name = "Nginx Fast-WS Spoof"
+    elif str(preset_id) == "3":
+        content = "HTTP/1.1 101 200 OK - Prime Khatab VIP Tunnel Connected\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nServer: Prime-Khatab-Ultra-Edge\r\n\r\n"
+        name = "Prime Khatab VIP Ultra"
+    else:
+        print("\033[1;31m[!] Invalid preset selection!\033[0m")
+        return False
+
+    with open(RESP_101_FILE, "wb") as f:
+        f.write(content.encode())
+    subprocess.run(["systemctl", "restart", "ssh-ws"], check=False)
+    print(f"\n\033[1;32m[✓] Preset '{name}' applied successfully and ssh-ws restarted!\033[0m")
+    view_responses()
+    return True
+
+def reset_custom_response():
+    removed = False
+    if os.path.exists(RESP_101_FILE):
+        os.remove(RESP_101_FILE)
+        removed = True
+    if os.path.exists(RESP_200_FILE):
+        os.remove(RESP_200_FILE)
+        removed = True
+    subprocess.run(["systemctl", "restart", "ssh-ws"], check=False)
+    if removed:
+        print("\n\033[1;32m[✓] Custom response removed. Default Prime Khatab Services response restored!\033[0m")
+    else:
+        print("\n\033[1;33m[*] Already using default Prime Khatab Services response.\033[0m")
+    view_responses()
+    return True
+
+def custom_response_menu():
+    while True:
+        print("\n" + "="*58)
+        print("\033[1;36m       PRIME KHATAB SERVICES - CUSTOM WS RESPONSE\033[0m")
+        print("="*58)
+        print(" \033[1;33m[1]\033[0m Get AI Prompt Template (Copy & give to ChatGPT/Claude)")
+        print(" \033[1;33m[2]\033[0m View Current Active HTTP Response")
+        print(" \033[1;33m[3]\033[0m Set / Paste New HTTP 101 Response (WebSocket)")
+        print(" \033[1;33m[4]\033[0m Set / Paste New HTTP 200 Response (CONNECT Tunnel)")
+        print(" \033[1;33m[5]\033[0m Apply Quick Presets (Cloudflare / Nginx / VIP)")
+        print(" \033[1;33m[6]\033[0m Reset to Default Prime Khatab Response")
+        print(" \033[1;33m[0]\033[0m Back to Main Menu")
+        print("="*58)
+        choice = input(" Select option [0-6]: ").strip()
+        if choice == "1":
+            get_ai_prompt()
+            input(" Press [Enter] to continue...")
+        elif choice == "2":
+            view_responses()
+            input(" Press [Enter] to continue...")
+        elif choice == "3":
+            set_custom_response("101")
+            input(" Press [Enter] to continue...")
+        elif choice == "4":
+            set_custom_response("200")
+            input(" Press [Enter] to continue...")
+        elif choice == "5":
+            print("\n Presets:")
+            print("  1. Cloudflare CDN Edge Spoof")
+            print("  2. Nginx Fast-WS Spoof")
+            print("  3. Prime Khatab VIP Ultra")
+            p_sel = input(" Select Preset [1-3]: ").strip()
+            apply_preset_response(p_sel)
+            input(" Press [Enter] to continue...")
+        elif choice == "6":
+            reset_custom_response()
+            input(" Press [Enter] to continue...")
+        elif choice == "0":
+            break
+        else:
+            print("\033[1;31m Invalid option!\033[0m")
+
 def set_domain(domain):
     with open(CONF_FILE, "w") as f:
         f.write(f"DOMAIN={domain}\n")
@@ -961,6 +1163,10 @@ def print_help():
    vpn-cli backup
    vpn-cli restore [file]
    vpn-cli set-domain <domain>
+   vpn-cli custom-response
+   vpn-cli get-prompt
+   vpn-cli view-response
+   vpn-cli reset-response
 
  Interactive Menu:
    Type 'menu' or 'prime' to launch interactive interface.
@@ -1012,6 +1218,20 @@ if __name__ == "__main__":
             set_domain(sys.argv[2])
         elif cmd in ["get-ip", "ip", "my-ip"]:
             print(get_server_ip())
+        elif cmd in ["custom-response", "response", "ws-response"]:
+            custom_response_menu()
+        elif cmd in ["get-prompt", "prompt"]:
+            get_ai_prompt()
+        elif cmd in ["view-response", "view-resp"]:
+            view_responses()
+        elif cmd in ["set-response-101", "set-101"]:
+            raw = " ".join(sys.argv[2:]) if len(sys.argv) > 2 else None
+            set_custom_response("101", raw)
+        elif cmd in ["set-response-200", "set-200"]:
+            raw = " ".join(sys.argv[2:]) if len(sys.argv) > 2 else None
+            set_custom_response("200", raw)
+        elif cmd in ["reset-response", "reset-resp"]:
+            reset_custom_response()
         else:
             print_help()
     except IndexError:

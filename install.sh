@@ -109,7 +109,17 @@ cat << 'EOF' > /usr/local/bin/p-info
 sudo /usr/local/bin/vpn-cli vps-info
 EOF
 
-chmod +x /usr/local/bin/status /usr/local/bin/live /usr/local/bin/speed /usr/local/bin/p-users /usr/local/bin/p-clean /usr/local/bin/p-info
+cat << 'EOF' > /usr/local/bin/p-response
+#!/bin/bash
+sudo /usr/local/bin/vpn-cli custom-response
+EOF
+
+cat << 'EOF' > /usr/local/bin/response
+#!/bin/bash
+sudo /usr/local/bin/vpn-cli custom-response
+EOF
+
+chmod +x /usr/local/bin/status /usr/local/bin/live /usr/local/bin/speed /usr/local/bin/p-users /usr/local/bin/p-clean /usr/local/bin/p-info /usr/local/bin/p-response /usr/local/bin/response
 
 # Install Xray-Core if not installed
 echo -e "${YELLOW}[5/8] Setting up Xray-Core engine...${NC}"
@@ -312,6 +322,8 @@ alias speed='sudo /usr/local/bin/vpn-cli speedtest'
 alias p-users='sudo /usr/local/bin/vpn-cli list'
 alias p-clean='sudo /usr/local/bin/vpn-cli auto-clean'
 alias p-info='sudo /usr/local/bin/vpn-cli vps-info'
+alias p-response='sudo /usr/local/bin/vpn-cli custom-response'
+alias response='sudo /usr/local/bin/vpn-cli custom-response'
 
 if [ -n "$PS1" ]; then
     echo -e "\033[1;36m=====================================================\033[0m"

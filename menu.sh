@@ -52,11 +52,12 @@ while true; do
     echo -e " ${YELLOW}[16]${NC} Backup Database & Configurations"
     echo -e " ${YELLOW}[17]${NC} Restore Database from Backup"
     echo -e " ${YELLOW}[18]${NC} Set Custom Domain / Bug Host"
+    echo -e " ${YELLOW}[19]${NC} Custom WS HTTP Response ${GREEN}(AI Prompt & Code Setter)${NC}"
     echo -e " ${YELLOW}[0]${NC}  Exit Menu"
     echo -e "${CYAN}=====================================================${NC}"
     echo -e " ${GREEN}Prime Khatab Services${NC} • Fast, Secure & Anonymous"
     echo -e "${CYAN}=====================================================${NC}"
-    read -rp " Select option [0-18]: " opt
+    read -rp " Select option [0-19]: " opt
 
     case "$opt" in
         1)
@@ -195,6 +196,10 @@ while true; do
             read -rp " Enter Domain (e.g., vpn.yourdomain.com): " domain
             sudo /usr/local/bin/vpn-cli set-domain "$domain"
             read -rp " Press [Enter] to continue..."
+            ;;
+        19)
+            echo ""
+            sudo /usr/local/bin/vpn-cli custom-response
             ;;
         0)
             echo ""
